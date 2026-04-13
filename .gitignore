@@ -1,0 +1,3 @@
+emby-config.json
+*.secret
+.env

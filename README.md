@@ -15,14 +15,25 @@ An OpenClaw skill for managing Emby media server accounts through Feishu (Lark) 
 
 | Command | Format | Example |
 |---------|--------|---------|
-| Register | `注册 <account>` or `注册 <account> <days>天` | `注册 13800001111 90天` |
+| Register | `注册 <account> <days>` | `注册 18812341234 365` |
+| Renew | `续费 <account> <days>` | `续费 18812341234 30` |
 | Delete | `删除 <account>` | `删除 13800001111` |
-| Renew | `续费 <account> <days>天` | `续费 13800001111 30天` |
 | Password | `改密码 <account> <new_password>` | `改密码 13800001111 mypass` |
 | Disable | `禁用 <account>` | `禁用 13800001111` |
 | Enable | `启用 <account>` | `启用 13800001111` |
 | Query | `查询 <account>` | `查询 13800001111` |
 | Config | `配置 Emby API` | Admin only |
+
+### Batch Registration/Renewal
+
+Register or renew multiple accounts at once (one per line):
+
+```
+注册
+18812341234 365
+18898765432 30
+13900001111 90
+```
 
 ## Installation
 

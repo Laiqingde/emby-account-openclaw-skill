@@ -86,6 +86,38 @@ The skill automatically creates a Feishu Bitable with two tables:
 | Details | Text | API response message |
 | Result | Select | Success/Failure |
 
+## Troubleshooting
+
+### `The model did not produce a response before the LLM idle timeout`
+
+Account management tasks chain multiple tool calls (Emby API → Feishu auth → Bitable write), which can exceed OpenClaw's default LLM idle timeout — especially for batch operations or first-time Bitable creation.
+
+Increase `agents.defaults.llm.idleTimeoutSeconds` in your OpenClaw config (typically `~/.openclaw/config.yaml`), or set to `0` to disable the timeout:
+
+```yaml
+agents:
+  defaults:
+    llm:
+      idleTimeoutSeconds: 300  # or 0 to disable
+```
+
+Restart the OpenClaw gateway for the change to take effect.
+
+### Operation succeeded but Bitable row is missing
+
+This skill is designed so that Bitable write failures **do not block** the main Emby operation. When the skill detects a write failure, it still replies with the Emby result and appends `⚠️ 多维表格写入失败：<reason>`.
+
+If you see this warning, possible causes:
+- `app_token` / `table_id` in `~/.openclaw/workspace/emby-bitable.json` is stale (table recreated, token rotated)
+- Feishu app lacks write permission on the Bitable
+- Field names in the Bitable were renamed manually and no longer match the skill's schema
+
+Fix the underlying issue, then re-log the operation manually if needed.
+
+### Renewal of a non-existent account
+
+When `续费 <account> <days>` targets an unregistered account, the skill auto-registers the account with `<days>` as its initial validity, and writes **two** rows: one to `operation_table` (type: Register) and one to `renewal_table` (with a note indicating auto-registration). This preserves the original "renewal" intent and initiator timestamp for statistics.
+
 ## License
 
 MIT
